@@ -9,7 +9,6 @@
 #
 # Connect from another host with MOSH_KEY=abcd mosh-client remoteHost 2000
 #
-#
 # TODO(hkjn): Consider adding back emacs + configs, once it's been fixed to work with musl and Alpine has a package:
 # http://forum.alpinelinux.org/forum/general-discussion/cant-find-emacs-package
 #
@@ -24,7 +23,7 @@ ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 
 # Install useful programs.
-RUN apk --no-cache add python py-pip bash vim mosh tmux git && \
+RUN apk --no-cache add python py-pip bash vim mosh tmux git go && \
     adduser -D $USER -s /bin/bash
 
 # Add locale settings.
