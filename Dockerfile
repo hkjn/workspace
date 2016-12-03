@@ -12,7 +12,7 @@
 # TODO(hkjn): Consider adding back emacs + configs, once it's been fixed to work with musl and Alpine has a package:
 # http://forum.alpinelinux.org/forum/general-discussion/cant-find-emacs-package
 #
-FROM alpine
+FROM hkjn/alpine
 
 MAINTAINER Henrik Jonsson <me@hkjn.me>
 
