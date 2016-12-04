@@ -11,16 +11,23 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 
-# Install useful programs.
-RUN apk add --no-cache bash git go python py2-pip openssh sudo tmux vim && \
-    ssh-keygen -b 4096 -t rsa -f /etc/ssh/ssh_host_rsa_key -N '' && \
-    /usr/sbin/sshd && \
+RUN set -x && \
+    apk add --no-cache --virtual .gosu-deps dpkg gnupg openssl && \
+    dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" && \
+    wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch" && \
+    wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch.asc" && \
+    export GNUPGHOME="$(mktemp -d)" && \
+    gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 && \
+    gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu && \
+    rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc && \
+    chmod +x /usr/local/bin/gosu && \
+    gosu nobody true && \
+    apk del .gosu-deps && \
+    apk add --no-cache bash git go python py2-pip openssh sudo tmux vim && \
     adduser -D user -u 500 -s /bin/bash && \
     echo "user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/user_sudo && \
     mkdir /home/user/.ssh && \
-    ssh-keygen -b 4096 -t rsa -f /home/user/.ssh/id_rsa -N '' && \
     chmod 700 /home/user/.ssh && \
-    chmod 400 /home/user/.ssh/authorized_keys && \
     chown -R user:user /home/user && \
     passwd -u user
 
@@ -36,4 +43,4 @@ RUN mkdir -p src/hkjn.me &&
     cd src/hkjn.me/dotfiles && \
     cp .bash* ~/
 
-ENTRYPOINT ["bash"]
+ENTRYPOINT ["gosu", "start", "&&", "bash"]
