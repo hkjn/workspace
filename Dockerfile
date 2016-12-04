@@ -7,11 +7,11 @@ FROM hkjn/alpine
 
 MAINTAINER Henrik Jonsson <me@hkjn.me>
 
-ENV LANG en_US.UTF-8 \
-    LANGUAGE en_US.UTF-8 \
-    LC_ALL en_US.UTF-8 \
-    GOSU_VERSION 1.10 \
-    GOSU_KEY B42F6819007F00F88E364FD4036A9C25BF357DD4
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US.UTF-8 \
+    LC_ALL=en_US.UTF-8 \
+    GOSU_VERSION=1.10 \
+    GOSU_KEY=B42F6819007F00F88E364FD4036A9C25BF357DD4
 
 RUN set -x && \
     apk add --no-cache --virtual .gosu-deps dpkg gnupg openssl && \
