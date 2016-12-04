@@ -40,7 +40,7 @@ USER user
 
 WORKDIR /home/user
 
-RUN mkdir -p src/hkjn.me &&
+RUN mkdir -p src/hkjn.me && \
     git clone https://github.com/hkjn/scripts && \
     git clone https://github.com/hkjn/dotfiles && \
     cd src/hkjn.me/dotfiles && \
