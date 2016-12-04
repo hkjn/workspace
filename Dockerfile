@@ -7,7 +7,8 @@ FROM hkjn/alpine
 
 MAINTAINER Henrik Jonsson <me@hkjn.me>
 
-ENV LANG=en_US.UTF-8 \
+ENV UNPRIVILEGED_UID=500 \
+    LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8 \
     GOSU_VERSION=1.10 \
@@ -24,9 +25,9 @@ RUN set -x && \
     rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc && \
     chmod +x /usr/local/bin/gosu && \
     gosu nobody true && \
-    apk del .gosu-deps && \
+    apk del --no-cache .gosu-deps && \
     apk add --no-cache bash git go python py2-pip openssh sudo tmux vim && \
-    adduser -D user -u 500 -s /bin/bash && \
+    adduser -D user -u $UNPRIVILEGED_UID -s /bin/bash && \
     echo "user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/user_sudo && \
     mkdir /home/user/.ssh && \
     chmod 700 /home/user/.ssh && \
