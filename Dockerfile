@@ -49,4 +49,4 @@ RUN mkdir -p src/hkjn.me && \
     cd dotfiles && \
     cp .bash* ~/
 
-ENTRYPOINT ["gosu", "start", "&&", "bash"]
+ENTRYPOINT ["gosu", "root", "start", "&&", "bash"]
