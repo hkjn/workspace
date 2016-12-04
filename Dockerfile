@@ -1,14 +1,5 @@
 # The workspace image is a minimal environment for technical work.
 #
-# It has mosh, making it easy to connect to it like other hosts. Bind
-# the mosh port to the host and run mosh-server to connect remotely:
-# $ docker run -p 2000:60001/udp hkjn/workspace
-# user@31b82abde850:~$ mosh-server
-#
-# MOSH CONNECT 60004 abcd
-#
-# Connect from another host with MOSH_KEY=abcd mosh-client remoteHost 2000
-#
 # TODO(hkjn): Consider adding back emacs + configs, once it's been fixed to work with musl and Alpine has a package:
 # http://forum.alpinelinux.org/forum/general-discussion/cant-find-emacs-package
 #
@@ -16,27 +7,33 @@ FROM hkjn/alpine
 
 MAINTAINER Henrik Jonsson <me@hkjn.me>
 
-ENV USER user
-ENV HOME /home/$USER
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 
 # Install useful programs.
-RUN apk --no-cache add python py-pip bash vim mosh tmux git go && \
-    adduser -D $USER -s /bin/bash
+RUN apk add --no-cache bash git go python py2-pip openssh sudo tmux vim && \
+    ssh-keygen -b 4096 -t rsa -f /etc/ssh/ssh_host_rsa_key -N '' && \
+    /usr/sbin/sshd && \
+    adduser -D user -u 500 -s /bin/bash && \
+    echo "user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/user_sudo && \
+    mkdir /home/user/.ssh && \
+    ssh-keygen -b 4096 -t rsa -f /home/user/.ssh/id_rsa -N '' && \
+    chmod 700 /home/user/.ssh && \
+    chmod 400 /home/user/.ssh/authorized_keys && \
+    chown -R user:user /home/user && \
+    passwd -u user
 
-# Add locale settings.
-COPY locale.conf /etc/
+RUN echo 'Happy haxxing!' > /etc/motd
 
-# Add user's config files.
-WORKDIR $HOME
+USER user
 
-COPY bashrc.sh .bashrc
-COPY gitconfig .gitconfig
-COPY tmux.conf .tmux.conf
-RUN echo 'Happy haxxing!' > /etc/issue
+WORKDIR /home/user
 
-USER $USER
+RUN mkdir -p src/hkjn.me &&
+    git clone https://github.com/hkjn/scripts && \
+    git clone https://github.com/hkjn/dotfiles && \
+    cd src/hkjn.me/dotfiles && \
+    cp .bash* ~/
 
 ENTRYPOINT ["bash"]

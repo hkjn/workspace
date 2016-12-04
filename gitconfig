@@ -1,9 +1,0 @@
-[user]
-	email = me@hkjn.me
-	name = Henrik Jonsson
-[push]
-	default = current
-[core]
-	editor = emacsclient -t -a=\\\"\\\"
-[credential]
-	helper = cache --timeout=10800
