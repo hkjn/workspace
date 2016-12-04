@@ -14,6 +14,8 @@ ENV UNPRIVILEGED_UID=500 \
     GOSU_VERSION=1.10 \
     GOSU_KEY=B42F6819007F00F88E364FD4036A9C25BF357DD4
 
+COPY start /usr/local/bin/
+
 RUN set -x && \
     apk add --no-cache --virtual .gosu-deps dpkg gnupg openssl && \
     dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" && \
@@ -41,9 +43,10 @@ USER user
 WORKDIR /home/user
 
 RUN mkdir -p src/hkjn.me && \
+    cd src/hkjn.me && \
     git clone https://github.com/hkjn/scripts && \
     git clone https://github.com/hkjn/dotfiles && \
-    cd src/hkjn.me/dotfiles && \
+    cd dotfiles && \
     cp .bash* ~/
 
 ENTRYPOINT ["gosu", "start", "&&", "bash"]
