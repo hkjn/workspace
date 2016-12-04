@@ -15,5 +15,5 @@ chmod 400 /home/user/.ssh/authorized_keys
 
 chown -R user:user /home/user
 
-/usr/sbin/sshd
+exec /usr/sbin/sshd -D
 
