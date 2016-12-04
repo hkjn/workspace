@@ -16,19 +16,7 @@ ENV UNPRIVILEGED_UID=500 \
 
 COPY start /usr/local/bin/
 
-RUN set -x && \
-    apk add --no-cache --virtual .gosu-deps dpkg gnupg openssl && \
-    dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" && \
-    wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch" && \
-    wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch.asc" && \
-    export GNUPGHOME="$(mktemp -d)" && \
-    gpg --keyserver ha.pool.sks-keyservers.net --recv-keys $GOSU_KEY && \
-    gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu && \
-    rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc && \
-    chmod +x /usr/local/bin/gosu && \
-    gosu nobody true && \
-    apk del --no-cache .gosu-deps && \
-    apk add --no-cache bash git go python py2-pip openssh sudo tmux vim && \
+RUN apk add --no-cache bash git go python py2-pip openssh sudo tmux vim && \
     adduser -D user -u $UNPRIVILEGED_UID -s /bin/bash && \
     echo "user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/user_sudo && \
     mkdir /home/user/.ssh && \
@@ -38,9 +26,9 @@ RUN set -x && \
 
 RUN echo 'Happy haxxing!' > /etc/motd
 
-USER user
-
 WORKDIR /home/user
+
+USER user
 
 RUN mkdir -p src/hkjn.me && \
     cd src/hkjn.me && \
@@ -48,5 +36,7 @@ RUN mkdir -p src/hkjn.me && \
     git clone https://github.com/hkjn/dotfiles && \
     cd dotfiles && \
     cp .bash* ~/
+
+USER root
 
 ENTRYPOINT ["start"]

@@ -2,9 +2,8 @@
 #
 # This is the entrypoint script for hkjn/workspace.
 #
-gosu root bash -c "
+
 ssh-keygen -b 4096 -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
-/usr/sbin/sshd
 
 ssh-keygen -b 4096 -t rsa -f /home/user/.ssh/id_rsa -N ''
 
@@ -15,7 +14,6 @@ cat /home/user/.ssh/id_rsa.pub >> .ssh/authorized_keys
 chmod 400 /home/user/.ssh/authorized_keys
 
 chown -R user:user /home/user
-"
 
-bash
+/usr/sbin/sshd
 
