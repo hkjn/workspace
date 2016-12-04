@@ -15,8 +15,5 @@ chmod 400 /home/user/.ssh/authorized_keys
 
 chown -R user:user /home/user
 
-# TODO: Since sshd exits when connection ends in foreground mode, we
-# should run it with supervisord if we want the container to be
-# persistent: https://docs.docker.com/engine/admin/using_supervisord/
-# exec /usr/sbin/sshd -D
+exec /usr/sbin/sshd -D
 
