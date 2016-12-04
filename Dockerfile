@@ -7,9 +7,11 @@ FROM hkjn/alpine
 
 MAINTAINER Henrik Jonsson <me@hkjn.me>
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US.UTF-8
-ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8 \
+    LANGUAGE en_US.UTF-8 \
+    LC_ALL en_US.UTF-8 \
+    GOSU_VERSION 1.10 \
+    GOSU_KEY B42F6819007F00F88E364FD4036A9C25BF357DD4
 
 RUN set -x && \
     apk add --no-cache --virtual .gosu-deps dpkg gnupg openssl && \
@@ -17,7 +19,7 @@ RUN set -x && \
     wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch" && \
     wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch.asc" && \
     export GNUPGHOME="$(mktemp -d)" && \
-    gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 && \
+    gpg --keyserver ha.pool.sks-keyservers.net --recv-keys $GOSU_KEY && \
     gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu && \
     rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc && \
     chmod +x /usr/local/bin/gosu && \
