@@ -3,18 +3,22 @@ set -euo pipefail
 
 DOCKER_USER="hkjn"
 DOCKER_IMAGE="workspace"
-
 ARCH="$(uname -m)"
 BUILD_DIR="$(mktemp -d)"
+ARCHBASE="hkjn/arch:$ARCH"
+ALPINEBASE="hkjn/alpine:$ARCH"
+TAG="$DOCKER_USER/$DOCKER_IMAGE:$ARCH"
 
-cp Dockerfile start "$BUILD_DIR/"
-[[ $ARCH = "x86_64" ]] || {
-  sed -i "s/FROM hkjn\//FROM hkjn\/$ARCH-/" "$BUILD_DIR/Dockerfile"
-  DOCKER_IMAGE="$ARCH-$DOCKER_IMAGE"
-}
-
-TAG="$DOCKER_USER/$DOCKER_IMAGE"
-echo "Building $TAG in $BUILD_DIR"
-docker build -t $TAG "$BUILD_DIR/"
+sed "s|ARG_FROM|${ARCHBASE}|g" Dockerfile.arch > $BUILD_DIR/Dockerfile.arch
+sed "s|ARG_FROM|${ALPINEBASE}|g" Dockerfile.alpine > $BUILD_DIR/Dockerfile.alpine
+cp -vr .bash_profile .emacs* $BUILD_DIR/
+echo "Building $TAG-arch in $BUILD_DIR.."
+cd $BUILD_DIR
+docker build -t $TAG-arch -f Dockerfile.arch .
+echo "Building $TAG-alpine in $BUILD_DIR.."
+docker build -t $TAG-alpine -f Dockerfile.alpine .
 NO_PUSH=${NO_PUSH:-""}
-[[ "$NO_PUSH" ]] || docker push $TAG
+[[ "$NO_PUSH" ]] || {
+  docker push $TAG-arch
+  docker push $TAG-alpine
+}

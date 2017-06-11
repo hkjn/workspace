@@ -1,0 +1,31 @@
+# The workspace image is a environment for technical work, based on
+# Alpine Linux.
+FROM ARG_FROM
+
+LABEL maintainer="Henrik Jonsson <me@hkjn.me>"
+
+ENV UNPRIVILEGED_UID=1001 \
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US.UTF-8 \
+    LC_ALL=en_US.UTF-8 \
+    GOPATH=/home/user \
+    PATH=$PATH:/home/user/bin
+
+# TODO(hkjn): Add back emacs if the issues with gofmt can be resolved.
+RUN apk add --no-cache bash git go musl-dev python3 tmux vim && \
+    adduser -D user -u $UNPRIVILEGED_UID -s /bin/bash && \
+    ln -s /usr/bin/python3 /usr/bin/python && \
+    ln -s /usr/bin/pip3 /usr/bin/pip
+
+# TODO: Could alternatively take $(id -u) and $(id -g) at run time,
+# then create user in entrypoint script which then hands off to bash..
+WORKDIR /home/user
+USER user
+
+RUN go get github.com/golang/lint/golint \
+           golang.org/x/tools/cmd/goimports \
+           github.com/jteeuwen/go-bindata/...
+
+COPY [".bash_profile", "./"]
+RUN echo "source ~/.bash_profile" > .bashrc
+ENTRYPOINT ["bash"]
