@@ -41,3 +41,5 @@ else
 fi
 
 export PATH=$PATH:/home/user/bin
+alias pp="git pull && git push"
+alias gs="git status"
