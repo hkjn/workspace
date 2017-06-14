@@ -1,0 +1,7 @@
+FROM ARG_FROM
+
+COPY [".gitconfig", "./"]
+
+RUN go get golang.org/x/crypto/acme/autocert
+
+ENTRYPOINT ["tmux"]
