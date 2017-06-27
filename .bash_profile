@@ -25,21 +25,38 @@ if ! [ -x /usr/bin/tput ] || ! tput setaf 1 >&/dev/null; then
    color_prompt=
 fi
 
-# Bash Prompt
-if [[ "$UID" -eq 0 ]]; then
-	_COL_USER=$COL_RED
-	_p="#"
-else
-	_COL_USER=$COL_GRE
-	_p="$"
-fi
-COLORIZED_PROMPT="${_COL_USER}\u${COL_WHI}@${COL_YEL}\h${COL_WHI}:\w\n${_p} $COL_NOR"
-if [ "$color_prompt" = yes ]; then
-	PS1="${COLORIZED_PROMPT}"
-else
-	PS1="\u@\h:\w${_p} "
-fi
+PROMPT_COMMAND=__prompt_command
+# Set prompt according to exit status and other info.
+__prompt_command() {
+  exitstatus="$?"
+
+  local usercol
+  local psymb
+  if [[ "$UID" -eq 0 ]]; then
+	  usercol=$COL_RED
+	  psymb="#"
+  else
+	  usercol=$COL_GRE
+	  psymb="$"
+  fi
+
+  local symbcol
+  if [[ $exitstatus != 0 ]]; then
+    symbcol="$COL_RED"
+  else
+	  symbcol="$COL_GRE"
+  fi
+
+  local prompt
+  prompt="${usercol}\u${COL_WHI}@${COL_YEL}\h${COL_WHI}:\w\n${symbcol}${psymb} $COL_NOR"
+  if [ "$color_prompt" = yes ]; then
+	  PS1="$prompt"
+  else
+	  PS1="\u@\h:\w${_p} "
+  fi
+}
 
 export PATH=$PATH:/home/user/bin
 alias pp="git pull && git push"
 alias gs="git status"
+alias gdc="git diff --cached"

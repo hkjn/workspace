@@ -7,8 +7,10 @@ ARCH="$(uname -m)"
 BUILD_DIR="$(mktemp -d)"
 ARCHBASE="hkjn/arch:$ARCH"
 ALPINEBASE="hkjn/alpine:$ARCH"
+VERSION=1.0.0
 TAG="$DOCKER_USER/$DOCKER_IMAGE:$ARCH"
-ARUNABASE="hkjn/workspace:$ARCH-arch"
+ARUNABASE="hkjn/workspace:$ARCH-arch-$VERSION"
+NO_PUSH=${NO_PUSH:-""}
 
 mkdir -p $BUILD_DIR/aruna
 sed "s|ARG_FROM|${ARCHBASE}|g" Dockerfile.arch > $BUILD_DIR/Dockerfile.arch
@@ -18,13 +20,13 @@ cp -vr .bash_profile .emacs* $BUILD_DIR/
 cp -vr aruna $BUILD_DIR/
 echo "Building $TAG-arch in $BUILD_DIR.."
 cd $BUILD_DIR
-docker build -t $TAG-arch -f Dockerfile.arch .
+docker build -t $TAG-arch-$VERSION -f Dockerfile.arch .
 echo "Building $TAG-alpine in $BUILD_DIR.."
-docker build -t $TAG-alpine -f Dockerfile.alpine .
-NO_PUSH=${NO_PUSH:-""}
-docker build -t $TAG-aruna aruna/
+docker build -t $TAG-alpine-$VERSION -f Dockerfile.alpine .
+echo "Building $TAG-aruna-$VERSION in $BUILD_DIR.."
+docker build -t $TAG-aruna-$VERSION aruna/
 [[ "$NO_PUSH" ]] || {
-  docker push $TAG-arch
-  docker push $TAG-alpine
-  docker push $TAG-aruna
+  docker push $TAG-arch-$VERSION
+  docker push $TAG-alpine-$VERSION
+  docker push $TAG-aruna-$VERSION
 }
