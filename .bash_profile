@@ -57,6 +57,7 @@ __prompt_command() {
 }
 
 export PATH=$PATH:/home/user/bin
+export EDITOR=nano
 alias pp="git pull && git push"
 alias gs="git status"
 alias gdc="git diff --cached"

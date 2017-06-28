@@ -2,14 +2,14 @@
 #
 # Start a workspace container for aruna.
 #
-declare VERSION=1.0.0
+# If container already is running, attach to it.
+#
+declare VERSION=1.0.1
 declare NAME=aruna-cities-$VERSION
 declare IMAGE=hkjn/workspace:$(uname -m)-aruna-$VERSION
 if docker ps | grep -q "${NAME}$"; then
-	echo "Container $NAME is already running".
-	echo
-	echo "Connect to it with:"
-	echo " $ docker attach $NAME"
+	echo "Container $NAME is already running, attaching..".
+	docker attach $NAME
 	exit 1
 fi
 if docker ps -a | grep -q "${NAME}$"; then
