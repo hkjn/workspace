@@ -1,16 +1,16 @@
 #!/bin/bash
 set -euo pipefail
 
-DOCKER_USER="hkjn"
-DOCKER_IMAGE="workspace"
-ARCH="$(uname -m)"
-BUILD_DIR="$(mktemp -d)"
-ARCHBASE="hkjn/arch:$ARCH"
-ALPINEBASE="hkjn/alpine:$ARCH"
-VERSION=1.0.2
-TAG="$DOCKER_USER/$DOCKER_IMAGE:$ARCH"
-ARUNABASE="hkjn/workspace:$ARCH-arch-$VERSION"
-NO_PUSH=${NO_PUSH:-""}
+declare DOCKER_USER="hkjn"
+declare DOCKER_IMAGE="workspace"
+declare ARCH="$(uname -m)"
+declare BUILD_DIR="$(mktemp -d)"
+declare ARCHBASE="hkjn/arch:$ARCH"
+declare ALPINEBASE="hkjn/alpine:$ARCH"
+declare VERSION=1.0.2
+declare TAG="$DOCKER_USER/$DOCKER_IMAGE:$ARCH"
+declare ARUNABASE="hkjn/workspace:$ARCH-arch-$VERSION"
+declare NO_PUSH=${NO_PUSH:-""}
 
 mkdir -p $BUILD_DIR/aruna
 sed "s|ARG_FROM|${ARCHBASE}|g" Dockerfile.arch > $BUILD_DIR/Dockerfile.arch
