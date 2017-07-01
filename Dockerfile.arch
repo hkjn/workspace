@@ -12,7 +12,7 @@ ENV UNPRIVILEGED_UID=1001 \
     USER=user
 
 RUN pacman --noconfirm -Syy && \
-    pacman --noconfirm -S emacs git go python tmux && \
+    pacman --noconfirm -S emacs git go python openssh tmux && \
     useradd -m user -u $UNPRIVILEGED_UID -s /bin/bash
 
 # TODO: Could alternatively take $(id -u) and $(id -g) at run time,

@@ -9,10 +9,11 @@ ENV UNPRIVILEGED_UID=1001 \
     LANGUAGE=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8 \
     GOPATH=/home/user \
-    PATH=$PATH:/home/user/bin
+    PATH=$PATH:/home/user/bin \
+    USER=user
 
 # TODO(hkjn): Add back emacs if the issues with gofmt can be resolved.
-RUN apk add --no-cache bash git go musl-dev python3 tmux vim && \
+RUN apk add --no-cache bash git go musl-dev python3 openssh tmux vim && \
     adduser -D user -u $UNPRIVILEGED_UID -s /bin/bash && \
     ln -s /usr/bin/python3 /usr/bin/python && \
     ln -s /usr/bin/pip3 /usr/bin/pip

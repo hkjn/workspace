@@ -4,7 +4,7 @@
 #
 # If container already is running, attach to it.
 #
-declare VERSION=1.0.2
+declare VERSION=1.0.3
 declare NAME=aruna-cities-$VERSION
 declare IMAGE=hkjn/workspace:$(uname -m)-aruna-$VERSION
 if docker ps | grep -q "${NAME}$"; then
