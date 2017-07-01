@@ -15,7 +15,9 @@ fi
 if docker ps -a | grep -q "${NAME}$"; then
 	docker rm $NAME
 fi
+
 docker run --name $NAME -it \
-           -w /home/user/src/github.com/arunaelentari/cities \
-           -v /home/aruna/src/github.com/arunaelentari/cities:/home/user/src/github.com/arunaelentari/cities \
-           $IMAGE
+       -w /home/user/src/github.com/arunaelentari/cities \
+       -v /home/aruna/.container_keys/:/home/user/.ssh:ro \
+       -v /home/aruna/src/github.com/arunaelentari/cities:/home/user/src/github.com/arunaelentari/cities \
+       $IMAGE
