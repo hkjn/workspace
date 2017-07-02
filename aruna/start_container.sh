@@ -4,7 +4,7 @@
 #
 # If container already is running, attach to it.
 #
-declare VERSION=1.0.4
+declare VERSION=1.0.5
 declare NAME=aruna-cities-$VERSION
 declare IMAGE=hkjn/workspace:$(uname -m)-aruna-$VERSION
 if docker ps | grep -q "${NAME}$"; then
@@ -18,6 +18,6 @@ fi
 
 docker run --name $NAME -it \
        -w /home/user/src/github.com/arunaelentari/cities \
-       -v /home/aruna/.container_keys/:/home/user/.ssh:ro \
+       -v /home/aruna/.container_keys/:/home/user/.ssh \
        -v /home/aruna/src/github.com/arunaelentari/cities:/home/user/src/github.com/arunaelentari/cities \
        $IMAGE
