@@ -17,14 +17,6 @@ COL_GRE="\[\e[1;32m\]"
 COL_RED="\[\e[1;31m\]"
 COL_NOR='\[\033[00m\]'
 
-color_prompt=yes
-if ! [ -x /usr/bin/tput ] || ! tput setaf 1 >&/dev/null; then
-   # We have no color support; not compliant with Ecma-48
-   # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-   # a case would tend to support setf rather than setaf.)
-   color_prompt=
-fi
-
 PROMPT_COMMAND=__prompt_command
 # Set prompt according to exit status and other info.
 __prompt_command() {
@@ -49,11 +41,7 @@ __prompt_command() {
 
   local prompt
   prompt="${usercol}\u${COL_WHI}@${COL_YEL}\h${COL_WHI}:\w\n${symbcol}${psymb} $COL_NOR"
-  if [ "$color_prompt" = yes ]; then
-	  PS1="$prompt"
-  else
-	  PS1="\u@\h:\w${_p} "
-  fi
+	PS1="$prompt"
 }
 
 # Starts ssh-agent and stores the SSH_AUTH_SOCK / SSH_AGENT_PID for
@@ -66,40 +54,38 @@ start_ssh_agent() {
 # Loads SSH identities (starting ssh-agent if necessary), recovering
 # from stale sockets.
 load_ssh_keys() {
-	# SSH-agent setup adapted from
-	# http://superuser.com/questions/141044/sharing-the-same-ssh-agent-among-multiple-login-sessions.
+  # SSH-agent setup adapted from
+  # http://superuser.com/questions/141044/sharing-the-same-ssh-agent-among-multiple-login-sessions.
 
-	# Time a key should be kept, in seconds.
-	key_ttl=$((3600*8))
-	if [[ ! -f ~/.ssh-agent.conf ]]; then
-		# No existing config, start agent.
-		start_ssh_agent
-		ssh-add -t $key_ttl > /dev/null 2>&1
-		return 0
-	fi
+  # Time a key should be kept, in seconds.
+  key_ttl=$((3600*8))
+  if [[ ! -f ~/.ssh-agent.conf ]]; then
+    # No existing config, start agent.
+    start_ssh_agent
+    ssh-add -t $key_ttl > /dev/null 2>&1
+    return 0
+  fi
 
-	# Found previous config, try loading it. This sources in the path to
-	# the authentication socket (SSH_AUTH_SOCK, used below).
-	source ~/.ssh-agent.conf > /dev/null
-	# List all identities the SSH agent knows about.
+  # Found previous config, try loading it. This sources in the path to
+  # the authentication socket (SSH_AUTH_SOCK, used below).
+  source ~/.ssh-agent.conf > /dev/null
+  # List all identities the SSH agent knows about.
 
   local stat
-	ssh-add -l > /dev/null 2>&1
+  ssh-add -l > /dev/null 2>&1
   stat=$?
-	# $?=0 means the socket is there and it has a key.
-	if [[ $stat -eq 0 ]]; then
-		return 0
-	elif [[ $stat -eq 1 ]]; then
-		# $?=1 means the socket is there but contains no key.
-		ssh-add -t $key_ttl > /dev/null 2>&1
-	elif [[ $stat -eq 2 ]]; then
-		# $?=2 means the socket is not there or broken
-		rm -f $SSH_AUTH_SOCK
-		start_ssh_agent
-		ssh-add -t $key_ttl > /dev/null 2>&1
-	fi
+  if [[ $stat -eq 1 ]]; then
+    # $?=1 means the socket is there but contains no key.
+    ssh-add -t $key_ttl > /dev/null 2>&1
+  elif [[ $stat -eq 2 ]]; then
+    # $?=2 means the socket is not there or broken
+    rm -f $SSH_AUTH_SOCK
+    start_ssh_agent
+    ssh-add -t $key_ttl > /dev/null 2>&1
+  fi
+  # $?=0 means the socket is there and it has a key.
+  return 0
 }
-
 
 export PATH=$PATH:/home/user/bin
 export EDITOR=nano

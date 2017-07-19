@@ -7,26 +7,45 @@ LABEL maintainer="Henrik Jonsson <me@hkjn.me>"
 ENV UNPRIVILEGED_UID=1001 \
     LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8 \
-    LC_ALL=en_US.UTF-8 \
     GOPATH=/home/user \
     PATH=$PATH:/home/user/bin \
     USER=user
 
 # TODO(hkjn): Add back emacs if the issues with gofmt can be resolved.
-RUN apk add --no-cache bash git go musl-dev python3 openssh tmux vim && \
+RUN apk add --no-cache bash curl file git go musl-dev python3 openssh tmux vim
+RUN apk add --no-cache --virtual .build-deps autoconf automake gcc g++ make libtool libc6-compat && \
     adduser -D user -u $UNPRIVILEGED_UID -s /bin/bash && \
     ln -s /usr/bin/python3 /usr/bin/python && \
-    ln -s /usr/bin/pip3 /usr/bin/pip
+    ln -s /usr/bin/pip3 /usr/bin/pip && \
+# TODO: Reenable protobuf installation (or compilation from source, if
+# necessary), if it can be made to work with musl. Currently, even if
+# installing libc6-compat package, we get errors around `__isnan` and
+# `__isnanf` symbols not found when running `protoc`.
+#    mkdir -p github.com/google && \
+#    cd github.com/google && \
+#    git clone https://github.com/google/protobuf && \
+#    cd protobuf && \
+#    ./autogen.sh && \
+#    ./configure && \
+    apk del .build-deps
 
 # TODO: Could alternatively take $(id -u) and $(id -g) at run time,
 # then create user in entrypoint script which then hands off to bash..
 WORKDIR /home/user
+
+COPY [".bash_profile", "./"]
+RUN echo "source ~/.bash_profile" > .bashrc && \
+    chown -R user:user /home/user
+
 USER user
 
 RUN go get github.com/golang/lint/golint \
            golang.org/x/tools/cmd/goimports \
-           github.com/jteeuwen/go-bindata/...
+           github.com/jteeuwen/go-bindata/... \
+           google.golang.org/grpc \
+           github.com/golang/protobuf/protoc-gen-go && \
+    curl -fsSLo protoc.zip https://github.com/google/protobuf/releases/download/v3.3.0/protoc-3.3.0-linux-x86_64.zip && \
+    unzip protoc.zip && \
+    rm protoc.zip
 
-COPY [".bash_profile", "./"]
-RUN echo "source ~/.bash_profile" > .bashrc
 ENTRYPOINT ["bash"]

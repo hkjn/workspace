@@ -7,25 +7,35 @@ LABEL maintainer="Henrik Jonsson <me@hkjn.me>"
 ENV UNPRIVILEGED_UID=1001 \
     LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8 \
-    LC_ALL=en_US.UTF-8 \
+    LC_ALL=C \
     GOPATH=/home/user \
     USER=user
-
 RUN pacman --noconfirm -Syy && \
-    pacman --noconfirm -S emacs git go python openssh tmux && \
+    pacman --noconfirm -S emacs git go python openssh tmux unzip && \
     useradd -m user -u $UNPRIVILEGED_UID -s /bin/bash
 
 # TODO: Could alternatively take $(id -u) and $(id -g) at run time,
 # then create user in entrypoint script which then hands off to bash..
 WORKDIR /home/user
-USER user
-
-RUN go get github.com/golang/lint/golint \
-           golang.org/x/tools/cmd/goimports \
-           github.com/jteeuwen/go-bindata/...
 
 COPY [".bash_profile", "./"]
 COPY [".emacs", "./"]
 COPY [".emacs.d/", "./.emacs.d/"]
-RUN echo "source ~/.bash_profile" > .bashrc
+
+RUN echo "source ~/.bash_profile" > .bashrc && \
+    chown -R user:user /home/user && \
+    echo 'en_US.UTF-8 UTF-8' > /etc/locale.gen && \
+    locale-gen
+
+USER user
+
+RUN go get github.com/golang/lint/golint \
+           golang.org/x/tools/cmd/goimports \
+           github.com/jteeuwen/go-bindata/... \
+           google.golang.org/grpc \
+           github.com/golang/protobuf/protoc-gen-go && \
+    curl -fsSLo protoc.zip https://github.com/google/protobuf/releases/download/v3.3.0/protoc-3.3.0-linux-x86_64.zip && \
+    unzip protoc.zip && \
+    rm protoc.zip
+
 ENTRYPOINT ["bash"]
