@@ -13,7 +13,7 @@ declare ARUNABASE="hkjn/workspace:$CPU_ARCH-arch-$VERSION"
 declare ZEROBASE="hkjn/workspace:$CPU_ARCH-alpine-$VERSION"
 declare NO_PUSH=${NO_PUSH:-""}
 
-mkdir -p $BUILD_DIR/aruna
+mkdir -p $BUILD_DIR/{aruna,zero}
 sed "s|ARG_FROM|${ARCHBASE}|g" Dockerfile.arch > $BUILD_DIR/Dockerfile.arch
 sed "s|ARG_FROM|${ALPINEBASE}|g" Dockerfile.alpine > $BUILD_DIR/Dockerfile.alpine
 sed "s|ARG_FROM|${ARUNABASE}|g" aruna/Dockerfile.in > $BUILD_DIR/aruna/Dockerfile
