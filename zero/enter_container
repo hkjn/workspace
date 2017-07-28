@@ -4,7 +4,7 @@
 #
 # If container already is running, attach to it.
 #
-declare VERSION=1.0.9
+declare VERSION=1.0.10
 declare NAME=workspace-$VERSION
 declare IMAGE=hkjn/workspace:$(uname -m)-zero-$VERSION
 
@@ -20,5 +20,5 @@ fi
 
 docker run --name $NAME -it \
        -v $HOME/src/hkjn.me:/home/user/src/hkjn.me \
-       -v $HOME/.container_keys:/home/user/.ssh \
+       -v $HOME/.container_keys:/home/user/.container_keys \
        $IMAGE
