@@ -1,8 +1,8 @@
 [user]
-	email = me@hkjn.me
-	name = Henrik Jonsson
+  email = me@hkjn.me
+  name = Henrik Jonsson
   signingkey = 9A5FDC15
 [push]
-	default = current
+  default = current
 [color]
-	ui = true
+  ui = true
