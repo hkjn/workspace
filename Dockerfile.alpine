@@ -4,7 +4,8 @@ FROM ARG_FROM
 
 LABEL maintainer="Henrik Jonsson <me@hkjn.me>"
 
-ENV UNPRIVILEGED_UID=1001 \
+ENV USER_UID=500 \
+    USER_GID=500 \
     LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8 \
     GOPATH=/home/user \
@@ -14,7 +15,7 @@ ENV UNPRIVILEGED_UID=1001 \
 # TODO(hkjn): Add back emacs if the issues with gofmt can be resolved.
 RUN apk add --no-cache bash curl file git go musl-dev python3 openssh tmux vim
 RUN apk add --no-cache --virtual .build-deps autoconf automake gcc g++ make libtool libc6-compat && \
-    adduser -D user -u $UNPRIVILEGED_UID -s /bin/bash && \
+    adduser -D user -u $USER_UID -g $USER_GID -s /bin/bash && \
     ln -s /usr/bin/python3 /usr/bin/python && \
     ln -s /usr/bin/pip3 /usr/bin/pip && \
 # TODO: Reenable protobuf installation (or compilation from source, if

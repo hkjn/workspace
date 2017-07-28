@@ -1,0 +1,5 @@
+FROM ARG_FROM
+
+COPY [".gitconfig", "./"]
+
+ENTRYPOINT ["tmux"]

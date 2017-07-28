@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+#
+# Start a workspace container for zero.
+#
+# If container already is running, attach to it.
+#
+declare VERSION=1.0.8
+declare NAME=zero-cities-$VERSION
+declare IMAGE=hkjn/workspace:$(uname -m)-zero-$VERSION
+
+if docker ps | grep -q "${NAME}$"; then
+	echo "Container $NAME is already running, attaching..".
+	docker attach $NAME
+	exit 1
+fi
+
+if docker ps -a | grep -q "${NAME}$"; then
+	docker rm $NAME
+fi
+
+docker run --name $NAME -it \
+       -v $HOME/src/hkjn.me:/home/user/src/hkjn.me \
+       -v $HOME/.container_keys:/home/user/.ssh \
+       $IMAGE
