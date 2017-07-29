@@ -4,7 +4,7 @@
 #
 # If container already is running, attach to it.
 #
-declare VERSION=1.0.10
+declare VERSION=1.0.11
 declare NAME=workspace-$VERSION
 declare IMAGE=hkjn/workspace:$(uname -m)-zero-$VERSION
 

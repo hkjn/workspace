@@ -1,6 +1,6 @@
 FROM ARG_FROM
 
 COPY [".gitconfig", "./"]
-COPY ["known_hosts", "./.ssh"]
+COPY ["known_hosts", "./.ssh/"]
 
 ENTRYPOINT ["tmux"]
