@@ -7,14 +7,29 @@ declare CPU_ARCH="$(uname -m)"
 declare BUILD_DIR="$(mktemp -d)"
 declare ARCHBASE="hkjn/arch:$CPU_ARCH"
 declare ALPINEBASE="hkjn/alpine:$CPU_ARCH"
-declare VERSION=$(cat VERSION)
 declare TAG="$DOCKER_USER/$DOCKER_IMAGE:$CPU_ARCH"
-declare ARUNABASE="hkjn/workspace:$CPU_ARCH-arch-$VERSION"
-declare ZEROBASE="hkjn/workspace:$CPU_ARCH-alpine-$VERSION"
 declare NO_PUSH=${NO_PUSH:-""}
 
-BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$BASEDIR"
+load() {
+	local ns="hkjn.me"
+	local p="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"	
+	while [ "$p" != "" ] && [ $(basename $p) != "$ns" ]; do p="${p/\/$(basename $p)/}"; done
+        source "$p/lib/$1" 2>/dev/null || { echo "[$0] FATAL: Couldn't find $ns/lib/$1." >&2; exit 1; }
+	export BASE="$p"
+}
+load "logging.sh"
+load "tools.sh"
+
+cd "$BASE/workspace"
+
+declare VERSION=$(cat VERSION)
+declare ARUNABASE="hkjn/workspace:$CPU_ARCH-arch-$VERSION"
+declare ZEROBASE="hkjn/workspace:$CPU_ARCH-alpine-$VERSION"
+
+if ! exists docker; then
+	fatal "No 'docker' found on PATH. This tool requires docker."
+fi
+
 mkdir -p $BUILD_DIR/{aruna,zero}
 sed "s|ARG_FROM|${ARCHBASE}|g" Dockerfile.arch > $BUILD_DIR/Dockerfile.arch
 sed "s|ARG_FROM|${ALPINEBASE}|g" Dockerfile.alpine > $BUILD_DIR/Dockerfile.alpine
@@ -22,20 +37,21 @@ sed "s|ARG_FROM|${ARUNABASE}|g" aruna/Dockerfile.in > $BUILD_DIR/aruna/Dockerfil
 sed "s|ARG_FROM|${ZEROBASE}|g" zero/Dockerfile.in > $BUILD_DIR/zero/Dockerfile
 cp -vr .bash_profile .emacs* $BUILD_DIR/
 cp -vr aruna zero $BUILD_DIR/
-echo "Building $TAG-arch-$VERSION in $BUILD_DIR.."
+info "Building $TAG-arch-$VERSION in $BUILD_DIR.."
 cd $BUILD_DIR
 docker build -t $TAG-arch-$VERSION -f Dockerfile.arch .
-echo "Building $TAG-alpine-$VERSION in $BUILD_DIR.."
+info "Building $TAG-alpine-$VERSION in $BUILD_DIR.."
 docker build -t $TAG-alpine-$VERSION -f Dockerfile.alpine .
-echo "Building $TAG-aruna-$VERSION in $BUILD_DIR.."
+info "Building $TAG-aruna-$VERSION in $BUILD_DIR.."
 docker build -t $TAG-aruna-$VERSION aruna/
-echo "Building $TAG-zero-$VERSION in $BUILD_DIR.."
+info "Building $TAG-zero-$VERSION in $BUILD_DIR.."
 docker build -t $TAG-zero-$VERSION zero/
 docker tag $TAG-alpine-$VERSION $TAG
 [[ "$NO_PUSH" ]] || {
-  docker push $TAG-arch-$VERSION
-  docker push $TAG-alpine-$VERSION
-  docker push $TAG-aruna-$VERSION
-  docker push $TAG-zero-$VERSION
-  docker push $TAG
+	info "Pushing images.."
+	docker push $TAG-arch-$VERSION
+	docker push $TAG-alpine-$VERSION
+	docker push $TAG-aruna-$VERSION
+	docker push $TAG-zero-$VERSION
+	docker push $TAG
 }
