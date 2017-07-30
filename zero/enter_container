@@ -4,12 +4,27 @@
 #
 # If container already is running, attach to it.
 #
-declare VERSION=$(cat ../VERSION)
+load() {
+	local ns="hkjn.me"
+	local p="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+	while [ "$p" != "" ] && [ $(basename $p) != "$ns" ]; do p="${p/\/$(basename $p)/}"; done
+	source "$p/lib/$1" 2>/dev/null || { echo "[$0] FATAL: Couldn't find $ns/lib/$1." >&2; exit 1; }
+  	export BASE="$p"
+}
+load "logging.sh"
+load "tools.sh"
+
+cd "$BASE/workspace"
+declare VERSION=$(cat VERSION)
 declare NAME=workspace-$VERSION
 declare IMAGE=hkjn/workspace:$(uname -m)-zero-$VERSION
 
+if ! exists docker; then
+	fatal "No 'docker' found on PATH. This tool requires docker."
+fi
+
 if docker ps | grep -q "${NAME}$"; then
-	echo "Container $NAME is already running, attaching..".
+	info "Container $NAME is already running, attaching..".
 	docker attach $NAME
 	exit 1
 fi
