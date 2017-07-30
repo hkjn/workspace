@@ -2,5 +2,7 @@ FROM ARG_FROM
 
 COPY [".gitconfig", "./"]
 COPY ["known_hosts", "./.ssh/"]
-
+USER root
+RUN chown -R $USER_UID:$USER_GID .ssh/
+USER user
 ENTRYPOINT ["tmux"]
