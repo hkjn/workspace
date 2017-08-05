@@ -9,18 +9,11 @@ declare ARCHBASE="hkjn/arch:$CPU_ARCH"
 declare ALPINEBASE="hkjn/alpine:$CPU_ARCH"
 declare TAG="$DOCKER_USER/$DOCKER_IMAGE:$CPU_ARCH"
 declare NO_PUSH=${NO_PUSH:-""}
+declare BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-load() {
-	local ns="hkjn.me"
-	local p="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"	
-	while [ "$p" != "" ] && [ $(basename $p) != "$ns" ]; do p="${p/\/$(basename $p)/}"; done
-        source "$p/lib/$1" 2>/dev/null || { echo "[$0] FATAL: Couldn't find $ns/lib/$1." >&2; exit 1; }
-	export BASE="$p"
-}
-load "logging.sh"
-load "tools.sh"
-
-cd "$BASE/workspace"
+cd "${BASE}"
+source "logging.sh"
+source "tools.sh"
 
 declare VERSION=$(cat VERSION)
 declare ARUNABASE="hkjn/workspace:$CPU_ARCH-arch-$VERSION"
