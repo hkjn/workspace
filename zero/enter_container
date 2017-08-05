@@ -4,17 +4,12 @@
 #
 # If container already is running, attach to it.
 #
-load() {
-	local ns="hkjn.me"
-	local p="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-	while [ "$p" != "" ] && [ $(basename $p) != "$ns" ]; do p="${p/\/$(basename $p)/}"; done
-	source "$p/lib/$1" 2>/dev/null || { echo "[$0] FATAL: Couldn't find $ns/lib/$1." >&2; exit 1; }
-  	export BASE="$p"
-}
-load "logging.sh"
-load "tools.sh"
+declare BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-cd "$BASE/workspace"
+cd "${BASE}/.."
+source "logging.sh"
+source "tools.sh"
+
 declare VERSION=$(cat VERSION)
 declare NAME=workspace-$VERSION
 declare IMAGE=hkjn/workspace:$(uname -m)-zero-$VERSION
