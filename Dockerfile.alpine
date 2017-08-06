@@ -14,7 +14,7 @@ ENV USER_UID=500 \
     PATH=$PATH:/home/user/bin \
     USER=user
 
-RUN apk add --no-cache bash curl file git go musl-dev python3 openssh tmux vim && \
+RUN apk add --no-cache bash curl coreutils file git go musl-dev python3 openssh tmux vim && \
     apk add --no-cache --virtual .build-deps autoconf automake gcc g++ make libtool libc6-compat && \
     adduser -D user -u $USER_UID -g $USER_GID -s /bin/bash && \
     ln -s /usr/bin/python3 /usr/bin/python && \
