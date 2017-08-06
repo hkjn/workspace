@@ -25,11 +25,10 @@ RUN apk add --no-cache bash curl file git go musl-dev python3 openssh tmux vim &
 # that work for armv7l under Alpine. Current binaries and .so files were taken from
 # the arch flavor of this image.
 COPY ["protoc-$cpu_arch/ld-2.25.so", "/lib64/"]
-COPY ["protoc", "/usr/local/bin/"]
 WORKDIR /lib64
 RUN ln -s ld-2.25.so ld-linux-x86-64.so.2 && \
-    mv libc.so.6 libc-2.25.so libm.so.6 libm-2.25.so libpthread.so.0 libpthread-2.25.so /usr/lib/
-    
+    mv libc.so.6 libc-2.25.so libm.so.6 libm-2.25.so libpthread.so.0 libpthread-2.25.so /usr/lib/ \
+    mv protoc /usr/local/bin/
 
 # TODO: Could alternatively take $(id -u) and $(id -g) at run time,
 # then create user in entrypoint script which then hands off to bash..
