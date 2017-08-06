@@ -4,6 +4,8 @@ FROM ARG_FROM
 
 LABEL maintainer="Henrik Jonsson <me@hkjn.me>"
 
+ARG cpu_arch
+
 ENV USER_UID=500 \
     USER_GID=500 \
     LANG=en_US.UTF-8 \
@@ -12,23 +14,22 @@ ENV USER_UID=500 \
     PATH=$PATH:/home/user/bin \
     USER=user
 
-# TODO(hkjn): Add back emacs if the issues with gofmt can be resolved.
-RUN apk add --no-cache bash curl file git go musl-dev python3 openssh tmux vim
-RUN apk add --no-cache --virtual .build-deps autoconf automake gcc g++ make libtool libc6-compat && \
+RUN apk add --no-cache bash curl file git go musl-dev python3 openssh tmux vim && \
+    apk add --no-cache --virtual .build-deps autoconf automake gcc g++ make libtool libc6-compat && \
     adduser -D user -u $USER_UID -g $USER_GID -s /bin/bash && \
     ln -s /usr/bin/python3 /usr/bin/python && \
     ln -s /usr/bin/pip3 /usr/bin/pip && \
-# TODO: Reenable protobuf installation (or compilation from source, if
-# necessary), if it can be made to work with musl. Currently, even if
-# installing libc6-compat package, we get errors around `__isnan` and
-# `__isnanf` symbols not found when running `protoc`.
-#    mkdir -p github.com/google && \
-#    cd github.com/google && \
-#    git clone https://github.com/google/protobuf && \
-#    cd protobuf && \
-#    ./autogen.sh && \
-#    ./configure && \
     apk del .build-deps
+
+# TODO(hkjn): Compile or download protoc binaries ourselves, if there's a way to make
+# that work for armv7l under Alpine. Current binaries and .so files were taken from
+# the arch flavor of this image.
+COPY ["protoc-$cpu_arch/ld-2.25.so", "/lib64/"]
+COPY ["protoc", "/usr/local/bin/"]
+WORKDIR /lib64
+RUN ln -s ld-2.25.so ld-linux-x86-64.so.2 && \
+    mv libc.so.6 libc-2.25.so libm.so.6 libm-2.25.so libpthread.so.0 libpthread-2.25.so /usr/lib/
+    
 
 # TODO: Could alternatively take $(id -u) and $(id -g) at run time,
 # then create user in entrypoint script which then hands off to bash..

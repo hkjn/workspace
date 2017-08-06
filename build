@@ -34,7 +34,7 @@ info "Building $TAG-arch-$VERSION in $BUILD_DIR.."
 cd $BUILD_DIR
 docker build -t $TAG-arch-$VERSION -f Dockerfile.arch .
 info "Building $TAG-alpine-$VERSION in $BUILD_DIR.."
-docker build -t $TAG-alpine-$VERSION -f Dockerfile.alpine .
+docker build -t $TAG-alpine-$VERSION --build-arg cpu_arch=$(uname -m) -f Dockerfile.alpine .
 info "Building $TAG-aruna-$VERSION in $BUILD_DIR.."
 docker build -t $TAG-aruna-$VERSION aruna/
 info "Building $TAG-zero-$VERSION in $BUILD_DIR.."
