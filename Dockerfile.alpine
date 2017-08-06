@@ -27,8 +27,7 @@ RUN apk add --no-cache bash curl file git go musl-dev python3 openssh tmux vim &
 COPY ["protoc-$cpu_arch/", "/lib64/"]
 WORKDIR /lib64
 RUN mv libc.so.6 libc-2.25.so libm.so.6 libm-2.25.so libpthread.so.0 libpthread-2.25.so /usr/lib/ && \
-    mkdir -p /home/user/bin && \
-    mv protoc /home/user/bin/
+    mkdir -p /home/user/bin
 
 # TODO: Could alternatively take $(id -u) and $(id -g) at run time,
 # then create user in entrypoint script which then hands off to bash..
