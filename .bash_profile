@@ -20,27 +20,29 @@ COL_NOR='\[\033[00m\]'
 PROMPT_COMMAND=__prompt_command
 # Set prompt according to exit status and other info.
 __prompt_command() {
-  exitstatus="$?"
+	exitstatus="$?"
 
-  local usercol
-  local psymb
-  if [[ "$UID" -eq 0 ]]; then
-	  usercol=$COL_RED
-	  psymb="#"
-  else
-	  usercol=$COL_GRE
-	  psymb="$"
-  fi
+	local usercol
+	local psymb
+	if [[ "$UID" -eq 0 ]]; then
+		usercol=$COL_RED
+		psymb="#"
+	else
+		usercol=$COL_GRE
+		psymb="$"
+	fi
 
-  local symbcol
-  if [[ $exitstatus != 0 ]]; then
-    symbcol="$COL_RED"
-  else
-	  symbcol="$COL_GRE"
-  fi
+	local symbcol
+	if [[ $exitstatus != 0 ]]; then
+		symbcol="$COL_RED"
+	else
+		symbcol="$COL_GRE"
+	fi
 
-  local prompt
-  prompt="${usercol}\u${COL_WHI}@${COL_YEL}\h${COL_WHI}:\w\n${symbcol}${psymb} $COL_NOR"
+	local host
+	host=$(hostname -f)
+	local prompt
+	prompt="${usercol}\u${COL_WHI}@${COL_YEL}${host}${COL_WHI}:\w\n${symbcol}${psymb} $COL_NOR"
 	PS1="$prompt"
 }
 
