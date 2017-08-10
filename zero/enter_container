@@ -28,6 +28,7 @@ if docker ps -a | grep -q "${NAME}$"; then
 fi
 
 docker run --name $NAME -it \
+       -p 60000-60020:60000-60020/udp \
        -v $HOME/src/hkjn.me:/home/user/src/hkjn.me \
        -v $HOME/.container_keys:/home/user/.container_keys \
        $IMAGE
