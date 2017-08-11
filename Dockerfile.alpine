@@ -35,7 +35,8 @@ WORKDIR /home/user
 
 COPY [".bash_profile", "./"]
 RUN echo "source ~/.bash_profile" > .bashrc && \
-    chown -R user:user /home/user
+    chown -R user:user /home/user && \
+    echo "Welcome to your workspace." > /etc/motd
 
 USER user
 
