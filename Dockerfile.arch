@@ -46,4 +46,12 @@ RUN mkdir -p src/github.com/google && \
     make && \
     make check
 
+USER root
+
+RUN cd src/github.com/google/protobuf && \
+    make install && \
+    ldconfig
+
+USER user
+
 ENTRYPOINT ["bash"]
