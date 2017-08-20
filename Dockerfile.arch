@@ -12,7 +12,7 @@ ENV UNPRIVILEGED_UID=1001 \
     USER=user
 
 RUN pacman --noconfirm -Syy && \
-    pacman --noconfirm -S autoconf automake emacs git go python openssh tmux unzip && \
+    pacman --noconfirm -S autoconf automake emacs gcc git go make python openssh tmux unzip && \
     useradd -m user -u $UNPRIVILEGED_UID -s /bin/bash
 
 # TODO: Could alternatively take $(id -u) and $(id -g) at run time,
@@ -40,7 +40,9 @@ RUN go get github.com/golang/lint/golint \
 RUN mkdir -p src/github.com/google && \
     cd src/github.com/google && \
     git clone https://github.com/google/protobuf && \
+    cd protobuf && \
     ./autogen.sh && \
+    ./configure && \
     make && \
     make check
 
