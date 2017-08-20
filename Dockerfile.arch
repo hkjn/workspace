@@ -1,6 +1,6 @@
 # The workspace image is an environment for technical work, based on
 # Arch Linux.
-FROM ARG_FROM
+FROM {{ARG_FROM}}
 
 LABEL maintainer="Henrik Jonsson <me@hkjn.me>"
 

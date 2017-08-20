@@ -1,22 +1,16 @@
 # The workspace image is a environment for technical work, based on
-# Alpine Linux.
+# Alpine Linux and Golang.
 FROM {{ARG_FROM}}
 
 LABEL maintainer="Henrik Jonsson <me@hkjn.me>"
 
 ARG cpu_arch
 
-ENV USER_UID=500 \
-    USER_GID=500 \
-    LANG=en_US.UTF-8 \
-    LANGUAGE=en_US.UTF-8 \
-    GOPATH=/home/user \
-    PATH=$PATH:/home/user/bin \
-    USER=user
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US.UTF-8
 
 RUN apk add --no-cache bash curl coreutils file git go musl-dev python3 mosh openssh tmux vim && \
     apk add --no-cache --virtual .build-deps autoconf automake gcc g++ make libtool libc6-compat && \
-    adduser -D user -u $USER_UID -g $USER_GID -s /bin/bash && \
     ln -s /usr/bin/python3 /usr/bin/python && \
     ln -s /usr/bin/pip3 /usr/bin/pip && \
     apk del .build-deps
@@ -31,14 +25,14 @@ RUN mv libc.so.6 libc-2.25.so libm.so.6 libm-2.25.so libpthread.so.0 libpthread-
 
 # TODO: Could alternatively take $(id -u) and $(id -g) at run time,
 # then create user in entrypoint script which then hands off to bash..
-WORKDIR /home/user
+WORKDIR /home/go
 
 COPY [".bash_profile", "./"]
 RUN echo "source ~/.bash_profile" > .bashrc && \
-    chown -R user:user /home/user && \
+    chown -R go:go /home/go && \
     echo "Welcome to your workspace." > /etc/motd
 
-USER user
+USER go
 
 RUN go get github.com/golang/lint/golint \
            golang.org/x/tools/cmd/goimports \
