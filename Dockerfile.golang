@@ -9,11 +9,13 @@ ARG cpu_arch
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8
 
+USER root
 RUN apk add --no-cache bash curl coreutils file git go musl-dev python3 mosh openssh tmux vim && \
     apk add --no-cache --virtual .build-deps autoconf automake gcc g++ make libtool libc6-compat && \
     ln -s /usr/bin/python3 /usr/bin/python && \
     ln -s /usr/bin/pip3 /usr/bin/pip && \
     apk del .build-deps
+USER go
 
 # TODO(hkjn): Compile or download protoc binaries ourselves, if there's a way to make
 # that work for armv7l under Alpine. Current binaries and .so files were taken from
