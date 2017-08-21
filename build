@@ -44,7 +44,7 @@ docker build -t ${TAG}-golang-${VERSION} --build-arg cpu_arch=${CPU_ARCH} -f Doc
 
 
 info "Building ${TAG}-aruna-${VERSION} in ${BUILD_DIR}.."
-docker build -t ${TAG}-aruna-${VERSIO}N aruna/
+docker build -t ${TAG}-aruna-${VERSION} aruna/
 info "Building ${TAG}-zero-${VERSION} in ${BUILD_DIR}.."
 docker build -t ${TAG}-zero-${VERSION} zero/
 
