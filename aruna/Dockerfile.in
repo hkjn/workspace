@@ -1,4 +1,4 @@
-FROM ARG_FROM
+FROM {{ARG_FROM}}
 
 COPY [".gitconfig", "./"]
 COPY [".bash_profile.extra", "./"]
