@@ -26,8 +26,6 @@ RUN mv libc.so.6 libc-2.25.so libm.so.6 libm-2.25.so libpthread.so.0 libpthread-
     mkdir -p /home/go/bin && \
     mv protoc /home/go/bin
 
-USER go
-
 # TODO: Could alternatively take $(id -u) and $(id -g) at run time,
 # then create user in entrypoint script which then hands off to bash..
 WORKDIR /home/go
