@@ -40,13 +40,13 @@ docker build -t ${TAG}-arch-$VERSION -f Dockerfile.arch .
 info "Building ${TAG}-alpine-${VERSION} in ${BUILD_DIR}.."
 docker build -t ${TAG}-alpine-${VERSION} --build-arg cpu_arch=${CPU_ARCH} -f Dockerfile.alpine .
 info "Building ${TAG}-golang-${VERSION} in ${BUILD_DIR}.."
-docker build -t {$TAG}-golang-${VERSION} --build-arg cpu_arch=${CPU_ARCH} -f Dockerfile.golang .
+docker build -t ${TAG}-golang-${VERSION} --build-arg cpu_arch=${CPU_ARCH} -f Dockerfile.golang .
 
 
-info "Building $TAG-aruna-$VERSION in $BUILD_DIR.."
-docker build -t $TAG-aruna-$VERSION aruna/
-info "Building $TAG-zero-$VERSION in $BUILD_DIR.."
-docker build -t $TAG-zero-$VERSION zero/
+info "Building ${TAG}-aruna-${VERSION} in ${BUILD_DIR}.."
+docker build -t ${TAG}-aruna-${VERSIO}N aruna/
+info "Building ${TAG}-zero-${VERSION} in ${BUILD_DIR}.."
+docker build -t ${TAG}-zero-${VERSION} zero/
 
 docker tag ${TAG}-alpine-${VERSION} ${TAG}
 
