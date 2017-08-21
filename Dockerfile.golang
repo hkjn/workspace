@@ -12,6 +12,16 @@ ENV LANG=en_US.UTF-8 \
 USER root
 RUN apk add --no-cache bash curl coreutils file git go musl-dev python3 mosh openssh tmux vim && \
     apk add --no-cache --virtual .build-deps autoconf automake gcc g++ make libtool libc6-compat && \
+    mkdir -p src/github.com/google && \
+    cd src/github.com/google && \
+    git clone https://github.com/google/protobuf && \
+    cd protobuf && \
+    ./autogen.sh && \
+    ./configure && \
+    make && \
+    make check &&
+    make install && \
+    ldconfig && \
     ln -s /usr/bin/python3 /usr/bin/python && \
     ln -s /usr/bin/pip3 /usr/bin/pip && \
     apk del .build-deps
@@ -42,22 +52,5 @@ RUN go get github.com/golang/lint/golint \
            github.com/jteeuwen/go-bindata/... \
            google.golang.org/grpc \
            github.com/golang/protobuf/protoc-gen-go
-
-RUN mkdir -p src/github.com/google && \
-    cd src/github.com/google && \
-    git clone https://github.com/google/protobuf && \
-    cd protobuf && \
-    ./autogen.sh && \
-    ./configure && \
-    make && \
-    make check
-
-USER root
-
-RUN cd src/github.com/google/protobuf && \
-    make install && \
-    ldconfig
-
-USER user
 
 ENTRYPOINT ["bash"]
