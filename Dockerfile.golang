@@ -12,19 +12,19 @@ ENV LANG=en_US.UTF-8 \
 USER root
 RUN apk add --no-cache bash curl coreutils file git go musl-dev python3 mosh openssh tmux vim && \
     apk add --no-cache --virtual .build-deps autoconf automake gcc g++ make libtool libc6-compat && \
+    mkdir -p src/github.com/google && \
+    cd src/github.com/google && \
+    git clone https://github.com/google/protobuf && \
+    cd protobuf && \
+    ./autogen.sh && \
+    ./configure && \
+    make && \
+    make check && \
+    make install && \
+    ldconfig && \
     ln -s /usr/bin/python3 /usr/bin/python && \
     ln -s /usr/bin/pip3 /usr/bin/pip && \
     apk del .build-deps
-
-
-# TODO(hkjn): Compile or download protoc binaries ourselves, if there's a way to make
-# that work for armv7l under Alpine. Current binaries and .so files were taken from
-# the arch flavor of this image.
-COPY ["protoc-$cpu_arch/", "/lib64/"]
-WORKDIR /lib64
-RUN mv libc.so.6 libc-2.25.so libm.so.6 libm-2.25.so libpthread.so.0 libpthread-2.25.so /usr/lib/ && \
-    mkdir -p /home/go/bin && \
-    mv protoc /home/go/bin
 
 # TODO: Could alternatively take $(id -u) and $(id -g) at run time,
 # then create user in entrypoint script which then hands off to bash..
