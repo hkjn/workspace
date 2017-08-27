@@ -40,8 +40,8 @@ RUN go get github.com/golang/lint/golint \
 
 RUN mkdir -p src/github.com/google && \
     cd src/github.com/google && \
-    git clone https://github.com/google/protobuf && \
-    cd protobuf && \
+    git clone https://github.com/google/protobuf
+RUN src/github.com/google/protobuf && \
     git checkout ${PROTOBUF_VERSION} && \
     ./autogen.sh && \
     ./configure && \
