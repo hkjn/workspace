@@ -10,7 +10,7 @@ ENV UNPRIVILEGED_UID=1001 \
     LC_ALL=C \
     GOPATH=/home/user \
     USER=user \
-    PROTOBUF_VERSION=3.3.x
+    PROTOBUF_VERSION=v3.4.0
 
 RUN pacman --noconfirm -Syy && \
     pacman --noconfirm -S autoconf automake emacs gcc git go make python openssh tmux unzip && \
