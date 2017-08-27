@@ -9,7 +9,8 @@ ENV UNPRIVILEGED_UID=1001 \
     LANGUAGE=en_US.UTF-8 \
     LC_ALL=C \
     GOPATH=/home/user \
-    USER=user
+    USER=user \
+    PROTOBUF_VERSION=3.4.x
 
 RUN pacman --noconfirm -Syy && \
     pacman --noconfirm -S autoconf automake emacs gcc git go make python openssh tmux unzip && \
@@ -41,6 +42,7 @@ RUN mkdir -p src/github.com/google && \
     cd src/github.com/google && \
     git clone https://github.com/google/protobuf && \
     cd protobuf && \
+    git checkout ${PROTOBUF_VERSION} && \
     ./autogen.sh && \
     ./configure && \
     make && \
