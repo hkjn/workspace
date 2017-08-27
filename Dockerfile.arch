@@ -41,7 +41,7 @@ RUN mkdir -p src/github.com/google && \
     cd src/github.com/google && \
     git clone https://github.com/google/protobuf
 
-ENV PROTOBUF_VERSION=v3.4.0
+ENV PROTOBUF_VERSION=v3.3.2
 RUN cd src/github.com/google/protobuf && \
     git checkout ${PROTOBUF_VERSION} && \
     ./autogen.sh && \
