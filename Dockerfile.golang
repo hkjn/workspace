@@ -15,7 +15,9 @@ RUN apk add --no-cache bash curl coreutils file git go musl-dev python3 mosh ope
     mkdir -p src/github.com/google && \
     cd src/github.com/google && \
     git clone https://github.com/google/protobuf
-WORKDIR /home/user/go/src/github.com/google/protobuf
+
+WORKDIR /home/go/src/github.com/google/protobuf
+
 RUN ./autogen.sh && \
     ./configure
 RUN \
