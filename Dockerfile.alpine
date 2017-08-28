@@ -4,8 +4,6 @@ FROM {{ARG_FROM}}
 
 LABEL maintainer="Henrik Jonsson <me@hkjn.me>"
 
-ARG cpu_arch
-
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8
 
