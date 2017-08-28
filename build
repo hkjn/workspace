@@ -6,8 +6,7 @@ declare DOCKER_IMAGE="workspace"
 declare CPU_ARCH="$(uname -m)"
 declare BUILD_DIR="$(mktemp -d)"
 declare ARCHBASE="hkjn/arch:${CPU_ARCH}"
-declare ALPINEBASE="hkjn/alpine:${CPU_ARCH}"
-declare GOLANGBASE="hkjn/golang:${CPU_ARCH}-1.9"
+declare ALPINEBASE="hkjn/golang:${CPU_ARCH}-1.9"
 declare TAG="$DOCKER_USER/$DOCKER_IMAGE:$CPU_ARCH"
 declare NO_PUSH=${NO_PUSH:-""}
 declare BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -18,7 +17,7 @@ source "tools.sh"
 
 declare VERSION=$(cat VERSION)
 declare ARUNABASE="hkjn/workspace:$CPU_ARCH-arch-$VERSION"
-declare ZEROBASE="hkjn/workspace:$CPU_ARCH-golang-$VERSION"
+declare ZEROBASE="hkjn/workspace:$CPU_ARCH-alpine-$VERSION"
 
 if ! exists docker; then
 	fatal "No 'docker' found on PATH. This tool requires docker."
@@ -27,7 +26,6 @@ fi
 mkdir -p $BUILD_DIR/{aruna,zero}
 sed "s|{{ARG_FROM}}|${ARCHBASE}|g" Dockerfile.arch > ${BUILD_DIR}/Dockerfile.arch
 sed "s|{{ARG_FROM}}|${ALPINEBASE}|g" Dockerfile.alpine > ${BUILD_DIR}/Dockerfile.alpine
-sed "s|{{ARG_FROM}}|${GOLANGBASE}|g" Dockerfile.golang > ${BUILD_DIR}/Dockerfile.golang
 
 sed "s|{{ARG_FROM}}|${ARUNABASE}|g" aruna/Dockerfile.in > ${BUILD_DIR}/aruna/Dockerfile
 sed "s|{{ARG_FROM}}|${ZEROBASE}|g" zero/Dockerfile.in > ${BUILD_DIR}/zero/Dockerfile
@@ -39,8 +37,6 @@ cd ${BUILD_DIR}
 docker build -t ${TAG}-arch-$VERSION -f Dockerfile.arch .
 info "Building ${TAG}-alpine-${VERSION} in ${BUILD_DIR}.."
 docker build -t ${TAG}-alpine-${VERSION} --build-arg cpu_arch=${CPU_ARCH} -f Dockerfile.alpine .
-info "Building ${TAG}-golang-${VERSION} in ${BUILD_DIR}.."
-docker build -t ${TAG}-golang-${VERSION} --build-arg cpu_arch=${CPU_ARCH} -f Dockerfile.golang .
 
 
 info "Building ${TAG}-aruna-${VERSION} in ${BUILD_DIR}.."
@@ -54,7 +50,6 @@ if [[ ! "$NO_PUSH" ]]; then
 	info "Pushing images.."
 	docker push ${TAG}-arch-${VERSION}
 	docker push ${TAG}-alpine-${VERSION}
-	docker push ${TAG}-golang-${VERSION}
 
 	docker push ${TAG}-aruna-${VERSION}
 	docker push ${TAG}-zero-${VERSION}
