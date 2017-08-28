@@ -44,6 +44,7 @@ info "Building ${TAG}-zero-${VERSION} in ${BUILD_DIR}.."
 docker build -t ${TAG}-zero-${VERSION} zero/
 
 docker tag ${TAG}-alpine-${VERSION} ${TAG}
+docker tag ${TAG}-alpine-${VERSION} ${TAG}-${VERSION}
 
 if [[ ! "$NO_PUSH" ]]; then
 	info "Pushing images.."
@@ -52,5 +53,6 @@ if [[ ! "$NO_PUSH" ]]; then
 
 	docker push ${TAG}-aruna-${VERSION}
 	docker push ${TAG}-zero-${VERSION}
+	docker push ${TAG}-${VERSION}
 	docker push ${TAG}
 fi
