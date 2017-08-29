@@ -9,11 +9,24 @@ ENV UNPRIVILEGED_UID=1001 \
     LANGUAGE=en_US.UTF-8 \
     LC_ALL=C \
     GOPATH=/home/user \
-    USER=user
+    USER=user \
+    PROTOBUF_VERSION=v3.3.2
 
 RUN pacman --noconfirm -Syy && \
     pacman --noconfirm -S autoconf automake emacs gcc git go make python openssh tmux unzip && \
-    useradd -m user -u $UNPRIVILEGED_UID -s /bin/bash
+    useradd -m user -u $UNPRIVILEGED_UID -s /bin/bash && \
+    mkdir -p src/github.com/google && \
+    cd src/github.com/google && \
+    git clone https://github.com/google/protobuf && \
+    cd protobuf && \
+    git checkout ${PROTOBUF_VERSION} && \
+    ./autogen.sh && \
+    ./configure && \
+    make && \
+    make check && \
+    make install && \
+    rm -rf /home/${USER}/src/github.com/google/protobuf && \
+    pacman --noconfirm -R autoconf automake gcc
 
 # TODO: Could alternatively take $(id -u) and $(id -g) at run time,
 # then create user in entrypoint script which then hands off to bash..
@@ -36,24 +49,6 @@ RUN go get github.com/golang/lint/golint \
            github.com/jteeuwen/go-bindata/... \
            google.golang.org/grpc \
            github.com/golang/protobuf/protoc-gen-go
-
-RUN mkdir -p src/github.com/google && \
-    cd src/github.com/google && \
-    git clone https://github.com/google/protobuf
-
-ENV PROTOBUF_VERSION=v3.3.2
-RUN cd src/github.com/google/protobuf && \
-    git checkout ${PROTOBUF_VERSION} && \
-    ./autogen.sh && \
-    ./configure && \
-    make && \
-    make check
-
-USER root
-
-RUN cd src/github.com/google/protobuf && \
-    make install && \
-    ldconfig
 
 USER user
 

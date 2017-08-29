@@ -5,7 +5,8 @@ FROM {{ARG_FROM}}
 LABEL maintainer="Henrik Jonsson <me@hkjn.me>"
 
 ENV LANG=en_US.UTF-8 \
-    LANGUAGE=en_US.UTF-8
+    LANGUAGE=en_US.UTF-8 \
+    PROTOBUF_VERSION=v.3.3.2
 
 USER root
 RUN apk add --no-cache bash curl coreutils file git musl-dev python3 mosh openssh tmux vim && \
@@ -14,6 +15,7 @@ RUN apk add --no-cache bash curl coreutils file git musl-dev python3 mosh openss
     cd src/github.com/google && \
     git clone https://github.com/google/protobuf && \
     cd protobuf && \
+    git checkout ${PROTOBUF_VERSION} && \
     ./autogen.sh && \
     ./configure && \
     make && \
@@ -21,6 +23,7 @@ RUN apk add --no-cache bash curl coreutils file git musl-dev python3 mosh openss
     make install && \
     ln -s /usr/bin/python3 /usr/bin/python && \
     ln -s /usr/bin/pip3 /usr/bin/pip && \
+    rm -rf /home/go/src/github.com/google/protobuf && \
     apk del .build-deps
 
 # TODO: Could alternatively take $(id -u) and $(id -g) at run time,
