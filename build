@@ -38,15 +38,8 @@ docker build -t ${TAG}-arch-$VERSION -f Dockerfile.arch .
 info "Building ${TAG}-alpine-${VERSION} in ${BUILD_DIR}.."
 docker build -t ${TAG}-alpine-${VERSION} -f Dockerfile.alpine .
 
-docker_squash() {
-	local tag
-	tag=${1}
-	info "Squashing ${tag}.."
-	docker run --rm docker sh -c "apk add --no-cache python3 && pip3 install docker-squash && docker-squash -t ${tag} ${tag}"
-}
-
-docker_squash ${TAG}-alpine-${VERSION}
-docker_squash ${TAG}-arch-${VERSION}
+./docker_squash ${TAG}-alpine-${VERSION}
+./docker_squash ${TAG}-arch-${VERSION}
 
 info "Building ${TAG}-aruna-${VERSION} in ${BUILD_DIR}.."
 docker build -t ${TAG}-aruna-${VERSION} aruna/
