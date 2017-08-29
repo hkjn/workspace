@@ -38,8 +38,8 @@ docker build -t ${TAG}-arch-$VERSION -f Dockerfile.arch .
 info "Building ${TAG}-alpine-${VERSION} in ${BUILD_DIR}.."
 docker build -t ${TAG}-alpine-${VERSION} -f Dockerfile.alpine .
 
-./docker_squash ${TAG}-alpine-${VERSION}
-./docker_squash ${TAG}-arch-${VERSION}
+${BASE}/docker_squash ${TAG}-alpine-${VERSION}
+${BASE}/docker_squash ${TAG}-arch-${VERSION}
 
 info "Building ${TAG}-aruna-${VERSION} in ${BUILD_DIR}.."
 docker build -t ${TAG}-aruna-${VERSION} aruna/
