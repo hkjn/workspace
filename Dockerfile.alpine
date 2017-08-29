@@ -6,18 +6,19 @@ LABEL maintainer="Henrik Jonsson <me@hkjn.me>"
 
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8 \
-    PROTOBUF_VERSION=v.3.3.2
+    PROTOBUF_VERSION=v3.3.2
 
 USER root
 RUN apk add --no-cache bash curl coreutils file git musl-dev python3 mosh openssh tmux vim && \
-    apk add --no-cache --virtual .build-deps autoconf automake gcc g++ make libtool libc6-compat && \
-    mkdir -p src/github.com/google && \
+    apk add --no-cache --virtual .build-deps autoconf automake gcc g++ make libtool libc6-compat
+RUN mkdir -p src/github.com/google && \
     cd src/github.com/google && \
     git clone https://github.com/google/protobuf && \
     cd protobuf && \
     git checkout ${PROTOBUF_VERSION} && \
     ./autogen.sh && \
-    ./configure && \
+    ./configure
+RUN cd src/github.com/google/protobuf && \
     make && \
     make check && \
     make install && \
