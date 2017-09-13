@@ -23,12 +23,11 @@ RUN pacman --noconfirm -Syy && \
     cd protobuf && \
     git checkout ${PROTOBUF_VERSION} && \
     ./autogen.sh && \
-    ./configure
-RUN cd /usr/local/src/github.com/google/protobuf && \
+    ./configure && \
     make && \
     make check && \
     make install && \
-    rm -rf /home/${USER}/usr/local/src/github.com/google/protobuf && \
+    rm -rf /usr/local/src/github.com/google/protobuf && \
     pacman --noconfirm -R autoconf automake gcc && \
     pacman -Sc
 
