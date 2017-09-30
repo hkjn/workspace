@@ -7,7 +7,7 @@ declare CPU_ARCH="$(uname -m)"
 declare BUILD_DIR="$(mktemp -d)"
 declare ARCHBASE="hkjn/arch:${CPU_ARCH}"
 declare ALPINEBASE="hkjn/golang:${CPU_ARCH}-1.9"
-declare TAG="$DOCKER_USER/$DOCKER_IMAGE:$CPU_ARCH"
+declare TAG="${DOCKER_USER}/${DOCKER_IMAGE}:${CPU_ARCH}"
 declare NO_PUSH=${NO_PUSH:-""}
 declare BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -16,14 +16,14 @@ source "logging.sh"
 source "tools.sh"
 
 declare VERSION=$(cat VERSION)
-declare ARUNABASE="hkjn/workspace:$CPU_ARCH-arch-$VERSION"
-declare ZEROBASE="hkjn/workspace:$CPU_ARCH-alpine-$VERSION"
+declare ARUNABASE="hkjn/workspace:arch-${VERSION}"
+declare ZEROBASE="hkjn/workspace:alpine-${VERSION}"
 
 if ! exists docker; then
 	fatal "No 'docker' found on PATH. This tool requires docker."
 fi
 
-mkdir -p $BUILD_DIR/{aruna,zero}
+mkdir -p ${BUILD_DIR}/{aruna,zero}
 sed "s|{{ARG_FROM}}|${ARCHBASE}|g" Dockerfile.arch > ${BUILD_DIR}/Dockerfile.arch
 sed "s|{{ARG_FROM}}|${ALPINEBASE}|g" Dockerfile.alpine > ${BUILD_DIR}/Dockerfile.alpine
 
@@ -32,7 +32,7 @@ sed "s|{{ARG_FROM}}|${ZEROBASE}|g" zero/Dockerfile.in > ${BUILD_DIR}/zero/Docker
 
 cp -vr .bash_profile .emacs* ${BUILD_DIR}/
 cp -vr aruna zero ${BUILD_DIR}/
-info "Building ${TAG}-arch-$VERSION in $BUILD_DIR.."
+info "Building ${TAG}-arch-${VERSION} in ${BUILD_DIR}.."
 cd ${BUILD_DIR}
 docker build -t ${TAG}-arch-$VERSION -f Dockerfile.arch .
 info "Building ${TAG}-alpine-${VERSION} in ${BUILD_DIR}.."
