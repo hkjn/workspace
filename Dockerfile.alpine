@@ -45,7 +45,9 @@ RUN go get github.com/golang/lint/golint \
            github.com/golang/dep/cmd/dep \
            github.com/jteeuwen/go-bindata/... \
            google.golang.org/grpc \
-           github.com/golang/protobuf/protoc-gen-go && \
-    rm -rf src/github.com src/golang.org src/google.golang.org
+           github.com/golang/protobuf/protoc-gen-go \
+           github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway \
+           github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger && \
+     rm -rf src/golang.org/x/{net,text,tools}/.git src/github.com/golang/dep/.git
 
 ENTRYPOINT ["bash"]
