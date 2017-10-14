@@ -16,8 +16,8 @@ source "logging.sh"
 source "tools.sh"
 
 declare VERSION=$(cat VERSION)
-declare ARUNABASE="hkjn/workspace:arch-${VERSION}"
-declare ZEROBASE="hkjn/workspace:alpine-${VERSION}"
+declare ARUNABASE="hkjn/workspace:${CPU_ARCH}-arch-${VERSION}"
+declare ZEROBASE="hkjn/workspace:${CPU_ARCH}-alpine-${VERSION}"
 
 if ! exists docker; then
 	fatal "No 'docker' found on PATH. This tool requires docker."
