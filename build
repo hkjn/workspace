@@ -41,13 +41,14 @@ docker build -t ${TAG}-alpine-${VERSION} -f Dockerfile.alpine .
 ${BASE}/docker_squash ${TAG}-alpine-${VERSION}
 ${BASE}/docker_squash ${TAG}-arch-${VERSION}
 
+docker tag ${TAG}-alpine-${VERSION} ${TAG}
+docker tag ${TAG}-alpine-${VERSION} ${TAG}-${VERSION}
+
 info "Building ${TAG}-aruna-${VERSION} in ${BUILD_DIR}.."
 docker build -t ${TAG}-aruna-${VERSION} aruna/
 info "Building ${TAG}-zero-${VERSION} in ${BUILD_DIR}.."
 docker build -t ${TAG}-zero-${VERSION} zero/
 
-docker tag ${TAG}-alpine-${VERSION} ${TAG}
-docker tag ${TAG}-alpine-${VERSION} ${TAG}-${VERSION}
 
 if [[ ! "$NO_PUSH" ]]; then
 	info "Pushing images.."
