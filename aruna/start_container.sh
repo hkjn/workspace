@@ -17,7 +17,8 @@ if docker ps -a | grep -q "${NAME}$"; then
 fi
 
 docker run --name $NAME -it \
-       -w /home/user/src/github.com/arunaelentari/cities \
+       --cpu-shares 1024 \
+       -w /home/user/src/github.com/arunaelentari \
        -v /home/aruna/.container_keys/:/home/user/.ssh \
-       -v /home/aruna/src/github.com/arunaelentari/cities:/home/user/src/github.com/arunaelentari/cities \
+       -v /home/aruna/src/github.com/arunaelentari:/home/user/src/github.com/arunaelentari \
        $IMAGE
