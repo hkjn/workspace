@@ -9,7 +9,7 @@ ENV LANG=en_US.UTF-8 \
     GOOS=linux
 
 USER root
-RUN apk add --no-cache bash curl coreutils dnsutils file git musl-dev python3 mosh openssh tmux vim && \
+RUN apk add --no-cache bash bind-tools curl coreutils file git musl-dev python3 mosh openssh tmux vim && \
     apk add --no-cache --virtual .build-deps autoconf automake gcc g++ make libtool libc6-compat
 RUN mkdir -p src/github.com/google && \
     cd src/github.com/google && \
