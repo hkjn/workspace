@@ -1,6 +1,6 @@
 include ../make/Makefile
 
-NAME=workspace-alpine
+NAME=workspace-arch
 
 pre-build:
 	@echo do some pre-build stuff

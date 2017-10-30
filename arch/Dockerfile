@@ -1,6 +1,6 @@
 # The workspace image is an environment for technical work, based on
 # Arch Linux.
-FROM {{ARG_FROM}}
+FROM hkjn/arch
 
 ENV UNPRIVILEGED_UID=1001 \
     LANG=en_US.UTF-8 \
