@@ -1,6 +1,6 @@
 # The workspace image is a environment for technical work, based on
 # Alpine Linux and Golang.
-FROM {{ARG_FROM}}
+FROM hkjn/golang
 
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8 \
