@@ -1,5 +1,5 @@
 REGISTRY_HOST=docker.io
-USERNAME=$(USER)
+USERNAME=hkjn
 NAME=$(shell basename $(PWD))
 
 RELEASE_SUPPORT := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))/.make-release-support
