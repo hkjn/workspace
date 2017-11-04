@@ -1,4 +1,5 @@
-FROM {{ARG_FROM}}
+FROM hkjn/workspace-arch:1.5.0-arm
+# FIXME: Drop -arm once multiarch is built
 
 COPY [".gitconfig", "./"]
 COPY [".bash_profile.extra", "./"]
